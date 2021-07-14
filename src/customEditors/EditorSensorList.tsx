@@ -27,7 +27,7 @@ const defaultNewSensor: Sensor = {
     x: 50,
     y: 50,
   },
-  mappingId: '',
+  mappingIds: [],
   unit: undefined,
   decimals: 2,
   valueBlink: false,

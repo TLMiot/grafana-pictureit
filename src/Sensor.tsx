@@ -10,7 +10,7 @@ import { formattedValueToString, getValueFormat } from '@grafana/data';
 
 type Props = {
   sensor: SensorType;
-  mapping: Mapping | undefined;
+  mappings: Mapping[];
   draggable: boolean;
   index: number;
   link: string;
@@ -33,7 +33,7 @@ const percToPx = (perc: number, size: number): number => {
 
 export const Sensor: React.FC<Props> = (props: Props) => {
   // const theme = useTheme();
-  const { draggable, imageDimensions, onPositionChange, index, link, name, mapping, value } = props;
+  const { draggable, imageDimensions, onPositionChange, index, link, name, mappings, value } = props;
   let sensor = _.clone(props.sensor);
 
   const styles = getStyles();
@@ -54,14 +54,16 @@ export const Sensor: React.FC<Props> = (props: Props) => {
     y: percToPx(sensor.position.y, imageDimensions.height),
   };
 
-  const mappingOperator = MappingOperators.find(mappingOperator => mapping?.operator === mappingOperator.id);
+  for (let mapping of mappings) {
+    const mappingOperator = MappingOperators.find(mappingOperator => mapping.operator === mappingOperator.id);
 
-  // Apply mapping function if it satisfies requirements
-  const isOverrode = mappingOperator?.function(value, mapping!.compareTo);
+    // Apply mapping function if it satisfies requirements
+    const isOverrode = mappingOperator?.function(value, mapping.compareTo);
 
-  if (isOverrode) {
-    // Assume that mapping values perfectly matches sensor fields, it's not covered by typescript
-    sensor = _.merge(sensor, mapping!.values);
+    if (isOverrode) {
+      // Assume that mapping values perfectly matches sensor fields, it's not covered by typescript
+      sensor = _.merge(sensor, mapping.values);
+    }
   }
 
   // Get and apply unit type formatter

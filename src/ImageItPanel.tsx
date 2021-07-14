@@ -6,6 +6,7 @@ import _ from 'lodash';
 // import { stylesFactory, useTheme } from '@grafana/ui';
 import { stylesFactory, useTheme } from '@grafana/ui';
 import { Sensor } from './Sensor';
+import { Mapping } from './types/Mapping';
 import SensorType from './types/Sensor';
 
 interface Props extends PanelProps<SimpleOptions> {}
@@ -93,14 +94,16 @@ export const ImageItPanel: React.FC<Props> = ({
               value = fieldDisplay.display.numeric;
             }
 
-            // Get mapping by id || undefined
-            const mapping = sensor.mappingId ? mappings.find(mapping => sensor.mappingId === mapping.id) : undefined;
+            // Get mappings by ids
+            const sensorMappings: Mapping[] = sensor.mappingIds
+              .map(mappingId => mappings.find((mapping: Mapping) => mappingId === mapping.id))
+              .filter(mapping => typeof mapping !== 'undefined') as Mapping[];
 
             return (
               <Sensor
                 draggable={lockSensors}
                 sensor={sensor}
-                mapping={mapping}
+                mappings={sensorMappings}
                 index={index}
                 link={replaceVariables(sensor.link)}
                 name={replaceVariables(sensor.name)}

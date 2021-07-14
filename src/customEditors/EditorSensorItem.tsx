@@ -52,12 +52,19 @@ export const EditorSensorItem: React.FC<Props> = (props: Props) => {
       </Field>
       {/* </HorizontalGroup> */}
 
-      <Field label="Mapping ID" description="Past here the ID of the mapping you want to use for this sensor">
+      <Field
+        label="Mapping ID"
+        description="Paste here comma-separated IDs of the mappings you want to use for this sensor"
+      >
         <Input
-          value={sensor.mappingId}
+          value={sensor.mappingIds.join(', ')}
           onChange={event => {
             updateSensor(sensor => {
-              sensor.mappingId = event.currentTarget.value;
+              const mappingIds = event.currentTarget.value
+                .split(',')
+                .map(mappingId => mappingId.trim())
+                .filter(mappingId => mappingId !== '');
+              sensor.mappingIds = mappingIds;
             });
           }}
         />
